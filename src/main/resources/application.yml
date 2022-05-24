@@ -8,6 +8,10 @@ server:
       timeout: 60
 
 spring:
+  security:
+    user:
+      name: market
+      password: password
   mustache:
     expose-session-attributes: true
   datasource: 
@@ -28,6 +32,3 @@ spring:
   output:
     ansi:
       enabled: always  
-
-
-
