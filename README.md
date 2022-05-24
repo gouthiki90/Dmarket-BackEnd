@@ -9,3 +9,4 @@ CREATE DATABASE marketdb;
 -- 모든 권한을 줌
 GRANT ALL PRIVILEGES ON marketdb.* TO 'market'@'%';
 ```
+
