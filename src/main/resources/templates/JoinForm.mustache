@@ -26,31 +26,30 @@
 <body>
     <h1>회원가입 페이지</h1>
     <hr>
-    <form action="/join" method="post">
+    <input type="hidden" id="auth-check" value="0">
+    <form>
         <div id="phone-number-box">
             <input id="phone-number" class="mr-5" type="text" name="phoneNumber" value="" placeholder="휴대폰 번호를 입력하세요">
             <input id="btn-auth" type="button" value="인증">
         </div>
 
-        <input class="mt-5" type="text" name="email" value="" placeholder="이메일을 입력하세요"> <br>
-        <input class="mt-5" type="text" name="region" value="" placeholder="지역"> <br>
-        <button class="mt-5">회원가입</button>
+        <input id="email" class="mt-5" type="text" name="email" value="" placeholder="이메일을 입력하세요"> <br>
+        <input id="region" class="mt-5" type="text" name="region" value="" placeholder="지역"> <br>
+        <input id="btn-join" class="mt-5" type="button" value="회원가입">
     </form>
 
 </body>
 
 <script>
-
+    let authCheck = $("#auth-check").val();
+    // 인증 버튼 클릭
     $("#btn-auth").click(() => {
         let phoneNumber = $("#phone-number").val();
         phoneNumberAuth(phoneNumber);
     });
 
+    // 휴대폰 인증번호 확인 함수
     async function phoneNumberAuth(phoneNumber) {
-        //let phoneNumberDto = {
-        //    phoneNumber: phoneNumber
-        //}
-        console.log(phoneNumber);
 
         let response = await fetch("/sendSMS", {
             method: "POST",
@@ -69,14 +68,51 @@
 
         let responseParse = await response.json();
 
+
+
+        // 인증번호 받고 확인버튼 클릭
         $("#btn-number-auth").click(() => {
             let authNumber = $("#number-auth").val();
             if (responseParse == authNumber) {
                 alert("인증이 완료되었습니다.");
                 $("#number-auth").addClass("my-hidden");
                 $("#btn-number-auth").addClass("my-hidden");
-            } else alert("인증 실패");
+                authCheck = 1;
+            } else {
+                alert("인증 실패");
+                authCheck = 0;
+            }
         });
+    }
+
+    // 회원가입 버튼 클릭
+    $("#btn-join").click(() => {
+        join();
+    });
+
+    // 회원가입 함수
+    async function join() {
+        let joinDto = {
+            phoneNumber: $("#phone-number").val(),
+            email: $("#email").val(),
+            region: $("#region").val()
+        }
+        if (authCheck == 1) {
+            let response = await fetch("/join", {
+                method: "POST",
+                body: JSON.stringify(joinDto),
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }
+            });
+            if (response.status === 200) {
+                alert("회원가입 완료");
+                location.href = "/";
+            } else alert("회원가입 실패");
+        }
+        else {
+            alert("휴대폰 인증이 필요합니다.");
+        }
     }
 </script>
 

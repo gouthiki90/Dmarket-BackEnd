@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,6 +25,11 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User {
 
+    @PrePersist
+    public void prePersist() {
+        this.manner = this.manner == null ? 36.5 : this.manner;
+    }
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
@@ -38,7 +44,7 @@ public class User {
     private String region;
 
     @Column(length = 10, nullable = false)
-    private double manner;
+    private Double manner;
 
     @Column(nullable = true)
     private String profileImg;
